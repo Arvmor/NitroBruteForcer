@@ -27,12 +27,13 @@ while True:
         }
         response = requests.request("GET", url, headers=headers).text.encode("utf8")
         message = json.loads(response.decode("utf-8"))["message"]
-        if message != "Unknown Gift Code":
-            print(url,response)
-            break
-        elif message == "You are being rate limited.":
-            print("Limited Now Waiting ...")
-            sleep(61)
+        if message != "Unknown Gift Code" or message == "You are being rate limited.":
+            if message == "You are being rate limited.":
+                print("Limited Now Waiting ...")
+                sleep(61)
+            else:
+                print(url,response)
+                break
         code = ''
     except:
         code = ''
