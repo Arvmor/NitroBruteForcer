@@ -130,3 +130,5 @@ dmypy.json
 
 # My Files
 proxy.txt
+checker.exe
+*.json

@@ -9,7 +9,7 @@ proxyIP = proxyFile.readlines()
 proxyFile.close()
 # Pick proxy
 proxy = choice(proxyIP).strip()
-proxies = {"http": proxy}
+proxies = {"socks4": proxy}
 proxyIP.remove(proxy+'\n')
 
 # Variables
@@ -28,23 +28,19 @@ while True:
     url = f"https://discordapp.com/api/v6/entitlements/gift-codes/{code}?with_application=true&with_subscription_plan=true"
     while True:
         try:
-            response = requests.request("GET", url=url, headers=headers, proxies=proxies).text.encode("utf8")
-            break
+            response = requests.request("GET", url=url, headers=headers, proxies=proxies,timeout=1).text.encode("utf8")
+            # Validating results
+            message = json.loads(response.decode("utf-8"))["message"]
+            print(code,message,proxy, end='\r')
+            if message == "You are being rate limited.":
+                raise Exception("Just got limited, Changing PROXY ...")
+            elif message == "Unknown Gift Code":
+                break
+            elif message != "Unknown Gift Code" and message != "You are being rate limited.":
+                print(url,response)
+                exit()
         except:
             proxy = choice(proxyIP).strip()
             proxies = {"http": proxy}
             proxyIP.remove(proxy+'\n')
-        
-    # Validating results
-    message = json.loads(response.decode("utf-8"))["message"]
-    print(code,message,proxy, end=' \r')
-    if message != "Unknown Gift Code" or message == "You are being rate limited.":
-        if message == "You are being rate limited.":
-            print("Just got limited, Changing PROXY ...")
-            proxy = choice(proxyIP).strip()
-            proxies = {"http": proxy}
-            proxyIP.remove(proxy+'\n')
-        else:
-            print(url,response)
-            exit()
     code = ''
