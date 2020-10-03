@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 
 # My Files
-proxy.txt
+*.txt
 checker.exe
 *.json

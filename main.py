@@ -28,15 +28,14 @@ while True:
     url = f"https://discordapp.com/api/v6/entitlements/gift-codes/{code}?with_application=true&with_subscription_plan=true"
     while True:
         try:
-            response = requests.request("GET", url=url, headers=headers, proxies=proxies,timeout=1).text.encode("utf8")
+            response = requests.request("GET", url=url, headers=headers, proxies=proxies).text.encode("utf8")
             # Validating results
-            message = json.loads(response.decode("utf-8"))["message"]
-            print(code,message,proxy, end='\r')
-            if message == "You are being rate limited.":
+            print(code,response,proxy, end='\r')
+            if "You are being rate limited." in response:
                 raise Exception("Just got limited, Changing PROXY ...")
-            elif message == "Unknown Gift Code":
+            elif "Unknown Gift Code" in response:
                 break
-            elif message != "Unknown Gift Code" and message != "You are being rate limited.":
+            elif (not "Unknown Gift Code" in response) and (not "You are being rate limited." in response):
                 print(url,response)
                 exit()
         except:
